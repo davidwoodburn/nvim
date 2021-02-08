@@ -224,7 +224,7 @@ hi FoldColumn        ctermfg=234          ctermbg=214          cterm=none
 hi SignColumn        ctermfg=230          ctermbg=none         cterm=none
 
 "  ColorColumn is used for text columns that are specifically highlighted by
-"  the 'set colorcolumn=' command.  It can be used for aligning text. FIXME
+"  the 'set colorcolumn=' command.  It can be used for aligning text.
 hi ColorColumn       ctermfg=230          ctermbg=235          cterm=none
 
 "  These are for use with Vim's Diff mode.  You can enter 'vimdiff' followed by
