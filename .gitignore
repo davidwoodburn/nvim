@@ -1,0 +1,10 @@
+.DS_Store
+.netrwhist
+after/
+autoload/
+doc/
+ftplugin/
+plugin/
+snippets/
+spell/
+syntax/
