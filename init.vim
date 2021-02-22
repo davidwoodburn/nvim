@@ -157,11 +157,40 @@ map <leader>s :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name")
    \ . '> trans<' . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
    \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<cr>
 
-"  (\t) Create new vertical terminal instance.
-nnoremap <silent> <leader>t :vs .<cr>:term<cr>a
+"  (\t) Create new terminal instance.
+nnoremap <silent> <leader>vt :vs<cr>:term<cr>a
+nnoremap <silent> <leader>t :sp<cr>:term<cr>:res 10<cr>a
+nnoremap <silent> <leader>T :tabe<cr>:term<cr>a
 
 "  (\w) Highlight trailing white-space characters
 nnoremap <leader>w /\s\+$<cr>
+
+"  (\bs) wipeout all hidden buffers
+func! Wipebufs()
+   "  Get all visible buffers in all tab pages.  This starts with an empty list
+   "  and uses the `extend` function to append buffer numbers to the list.  The
+   "  `tabpagenr` function returns the number of a tab page.  With the '$' input
+   "  it returns a total number of tab pages.  The `tabpagebuflist` function
+   "  gets all visible buffers from a given tab page.
+   let buflist = []
+   for i in range(tabpagenr('$'))
+      call extend(buflist, tabpagebuflist(i + 1))
+   endfor
+
+   "  Wipeout all hidden buffers.  The `bufnr` function with the '$' input
+   "  returns the total number of buffers, visible or not.  The `index` function
+   "  returns `-1` if the second parameter is not found in the first parameter.
+   "  It returns the zero-based index of the matching value from the first
+   "  parameter, otherwise.  The `bufexists` function returns 0 if the given
+   "  buffer does not exist and 1 otherwise.  So, if the buffer is not already
+   "  in the list of visible buffers, and the buffer does exist, wipe it out.
+   for i in range(1, bufnr("$"))
+      if index(buflist, i) == -1 && bufexists(i)
+         exe 'bw ' . i
+      endif
+   endfor
+endfunc
+nnoremap <silent><leader><bs> :call Wipebufs()<cr>:echo "Bufs wiped"<cr>
 
 "
 "  Redefined navigation
