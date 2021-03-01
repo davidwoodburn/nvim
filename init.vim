@@ -1,6 +1,6 @@
 "  Purpose: initialization file
 "  Author:  David Woodburn <david.woodburn@icloud.com>
-"  Date:    2021-01-29
+"  Date:    2021-03-01
 
 "  --------
 "  Settings
@@ -9,6 +9,7 @@
 "  Text formatting
 filetype indent on               "  turn on indentation
 set linebreak                    "  visually wrap long lines between words
+let &showbreak=">  "             "  show at beginning of visually-wrapped lines
 set textwidth=80                 "  break after 80 characters
 set cinoptions+=:0               "  indent case labels relative to 'switch'
 set cinoptions+=l1               "  do not align blocks to end of case label
@@ -17,7 +18,7 @@ set tabstop=3                    "  make tabs 3 spaces wide
 set shiftwidth=3                 "  make indents 3 spaces wide
 set spell spelllang=en_us        "  turn on spelling for US English
 set list                         "  turn on show tabs
-set listchars=tab:\|-            "  show tabs as >--
+set listchars=tab:\|-            "  show tabs as |--
 syntax enable                    "  enable syntax highlighting
 set background=dark              "  turn on the dark theme
 colo cterm8                      "  choose the color scheme
@@ -29,13 +30,12 @@ set backspace+=indent            "  allow backspacing over autoindent
 set backspace+=eol               "  allow backspacing over line breaks
 set backspace+=start             "  allow backspacing over start of insert
 set nrformats+=alpha             "  turn on increments for alpha characters
-set com=sr:/*,mb:\ ,ex:*/        "  set comments style
 set modeline                     "  turn on the reading of settings from files
 set modelines=5                  "  set the number of lines read for settings
 set spell!                       "  turn on spell checking for all occasions
-"set ignorecase                  "  do not ignore case when searching
 set smartcase                    "  override ignorecase when capitals are used
 set suffixesadd=.c,.m,.tex,.txt,.vim,.md  "  extensions to try for gf (go file)
+set undofile                     "  turn on persistent undo
 
 "  Interface
 set number                       "  turn on line numbers
@@ -53,7 +53,7 @@ set wildmenu                     "  turn on command-line autocompletion (tab)
 set wildignore=*.o,*~            "  ignore certain file types for autocompletion
 set showcmd                      "  show commands in the bottom-right corner
 set scrolloff=1                  "  set the default scroll offset to one
-set scrolljump=3                 "  minimum lines to scroll with cursor
+set scrolljump=2                 "  minimum lines to scroll with cursor
 set noswapfile                   "  do not create swap files (temp save files)
 set belloff=all                  "  turn off all bell sounds
 set noerrorbells                 "  turn off error bells
@@ -149,6 +149,9 @@ nnoremap <leader>a /[^\x00-\x7F]<cr>
 "  (\b) Close buffer without closing window
 nnoremap <silent> <leader>b :bn<bar>bd#<cr>
 
+"  (\d) Find duplicates
+nnoremap <leader>d /\(\<\w\+\>\)\_s*\<\1\><cr>
+
 "  (\r) Retab, remove Windows-style newlines, and find non-ascii characters.
 nnoremap <silent> <leader>r :retab<cr>:%s/\r//ge<cr>/[^\x00-\x7F]<cr>
 
@@ -161,6 +164,9 @@ map <leader>s :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name")
 nnoremap <silent> <leader>vt :vs<cr>:term<cr>a
 nnoremap <silent> <leader>t :sp<cr>:term<cr>:res 10<cr>a
 nnoremap <silent> <leader>T :tabe<cr>:term<cr>a
+
+"  (\u) Toggle the undo tree
+nnoremap <leader>u :UndotreeToggle<cr>
 
 "  (\w) Highlight trailing white-space characters
 nnoremap <leader>w /\s\+$<cr>
