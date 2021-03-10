@@ -43,7 +43,7 @@ set completeopt=menuone
 set number                       "  turn on line numbers
 set laststatus=2                 "  always show status line
 set statusline=\ %<%f\ %h%m%r%=%-14.(%l,%c%V%)\ %P\ \
-      \ \{%n\/%{bufnr('$')}\}\ (%{changenr()})
+      \ \{%n\/%{bufnr('$')}\}\ (%{changenr()})\ " _
 set splitbelow                   "  make windows split below, not above
 set splitright                   "  make windows split right, not left
 set mouse=a                      "  turn on the mouse for all modes
