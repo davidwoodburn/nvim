@@ -1,13 +1,13 @@
 "  Purpose: initialization file
 "  Author:  David Woodburn <david.woodburn@icloud.com>
-"  Date:    2021-03-01
+"  Date:    2021-03-10
 
 "  --------
 "  Settings
 "  --------
 
 "  Text formatting
-filetype indent on               "  turn on indentation
+filetype plugin on               "  turn on indentation
 set linebreak                    "  visually wrap long lines between words
 let &showbreak=">  "             "  show at beginning of visually-wrapped lines
 set textwidth=80                 "  break after 80 characters
@@ -36,11 +36,14 @@ set spell!                       "  turn on spell checking for all occasions
 set smartcase                    "  override ignorecase when capitals are used
 set suffixesadd=.c,.m,.tex,.txt,.vim,.md  "  extensions to try for gf (go file)
 set undofile                     "  turn on persistent undo
+set omnifunc=OmniComplete
+set completeopt=menuone
 
 "  Interface
 set number                       "  turn on line numbers
 set laststatus=2                 "  always show status line
-set statusline=\ %<%f\ %h%m%r%=%-14.(%l,%c%V%)\ %P\ \ \{%n\/%{bufnr('$')}\}\  "_
+set statusline=\ %<%f\ %h%m%r%=%-14.(%l,%c%V%)\ %P\ \
+      \ \{%n\/%{bufnr('$')}\}\ (%{changenr()})
 set splitbelow                   "  make windows split below, not above
 set splitright                   "  make windows split right, not left
 set mouse=a                      "  turn on the mouse for all modes
@@ -68,7 +71,7 @@ let g:netrw_liststyle = 1        "  (0) thin, (1) long, (2) wide, (3) tree
 let g:netrw_sizestyle = "H"      "  (b) bytes, (h) base-1000, (H) base-1024
 let g:netrw_browse_split = 0     "  (0) replace, (1) sp, (2) vs, (3) tabe
 let g:netrw_sort_options ="i"    "  ignore case when sorting file names
-let g:netrw_sort_by = "name"     "  name, time, size, exten
+let g:netrw_sort_by = "name"     "  name, time, size, extension
 let g:netrw_timefmt = "%Y.%m.%d %H:%M" "  custom date and time format
 let g:netrw_keepdir = 0          "  change directory to what is visible
 
@@ -96,14 +99,16 @@ inoremap <silent> <c-c> <esc>:exe "set cc="
 nnoremap <silent> <c-c> :exe "set cc="
    \ . (&colorcolumn == "" ? "81" : "")<cr>
 
-"  (^h) Turn off hilite
-inoremap <silent> <c-h> <esc>:noh<cr>a
-nnoremap <silent> <c-h> :noh<cr>
+"  (^h) Toggle search hilite visibility
+inoremap <silent> <c-h> <esc>:if (v:hlsearch) \| noh \| else
+   \ \| set hls \| endif<cr>a
+nnoremap <silent> <c-h> :if (v:hlsearch) \| noh \| else
+   \ \| set hls \| endif<cr>
 
 "  (^k) Multi-file search for word under cursor or visual-mode selected text
-if executable("rg")  "  Use ripgrep (rg), if possible.
+if executable("rg")  "  Use ripgrep (rg), if possible
    set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
-else                 "  Or, use grep.
+else                 "  Otherwise, use grep
    set grepprg=grep\ --vimgrep\ --no-heading\ --smart-case
 endif
 nnoremap <c-k> :silent exe "grep! -r_ "
@@ -141,37 +146,9 @@ nnoremap <silent> <c-z> :set spell!<cr>
 "
 
 "  (\ ) Invoking netrw in a split vertical window
-nnoremap <Leader><Space> :Rexplore<CR>
+nnoremap <leader><space> :Rexplore<cr>
 
-"  (\a) Highlight non-ascii characters
-nnoremap <leader>a /[^\x00-\x7F]<cr>
-
-"  (\b) Close buffer without closing window
-nnoremap <silent> <leader>b :bn<bar>bd#<cr>
-
-"  (\d) Find duplicates
-nnoremap <leader>d /\(\<\w\+\>\)\_s*\<\1\><cr>
-
-"  (\r) Retab, remove Windows-style newlines, and find non-ascii characters.
-nnoremap <silent> <leader>r :retab<cr>:%s/\r//ge<cr>/[^\x00-\x7F]<cr>
-
-"  (\s) Identify the syntax highlighting rules on text beneath cursor
-map <leader>s :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name")
-   \ . '> trans<' . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
-   \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<cr>
-
-"  (\t) Create new terminal instance.
-nnoremap <silent> <leader>vt :vs<cr>:term<cr>a
-nnoremap <silent> <leader>t :sp<cr>:term<cr>:res 10<cr>a
-nnoremap <silent> <leader>T :tabe<cr>:term<cr>a
-
-"  (\u) Toggle the undo tree
-nnoremap <leader>u :UndotreeToggle<cr>
-
-"  (\w) Highlight trailing white-space characters
-nnoremap <leader>w /\s\+$<cr>
-
-"  (\bs) wipeout all hidden buffers
+"  (\b) Wipeout all hidden buffers
 func! Wipebufs()
    "  Get all visible buffers in all tab pages.  This starts with an empty list
    "  and uses the `extend` function to append buffer numbers to the list.  The
@@ -196,15 +173,44 @@ func! Wipebufs()
       endif
    endfor
 endfunc
-nnoremap <silent><leader><bs> :call Wipebufs()<cr>:echo "Bufs wiped"<cr>
+nnoremap <silent><leader>b :call Wipebufs()<cr>:echo "Bufs wiped"<cr>
+
+"  (\d) Find one-word repeats
+nnoremap <leader>d /\(\<\w\+\>\)\s*\<\1\><cr>
+
+"  (\l) New directory
+nnoremap <leader>l :sp .<cr>
+nnoremap <leader>vl :vs .<cr>
+nnoremap <leader>L :tabe .<cr>
+
+"  (\n) Open notes file
+nnoremap <silent> <leader>n :sp ~/.config/nvim/notes.txt<cr>:lcd %:p:h<cr>
+nnoremap <silent> <leader>vn :vs ~/.config/nvim/notes.txt<cr>:lcd %:p:h<cr>
+nnoremap <silent> <leader>N :tabe ~/.config/nvim/notes.txt<cr>:lcd %:p:h<cr>
+
+"  (\r) Retab, remove Windows-style newlines, and find non-ascii characters.
+nnoremap <silent> <leader>r :retab<cr>:%s/\r//ge<cr>/[^\x00-\x7F]<cr>
+
+"  (\s) Identify the syntax highlighting rules on text beneath cursor
+nnoremap <leader>s :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name")
+   \ . '> trans<' . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
+   \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<cr>
+
+"  (\t) Create new terminal instance.
+nnoremap <silent> <leader>vt :vs<cr>:term<cr>a
+nnoremap <silent> <leader>t :sp<cr>:term<cr>:res 10<cr>a
+nnoremap <silent> <leader>T :tabe<cr>:term<cr>a
+
+"  (\w) Highlight trailing white-space characters
+nnoremap <leader>w /\s\+$<cr>
 
 "
 "  Redefined navigation
 "
 
 "  Move scroll by more than one line.
-nnoremap <C-e> 3<C-e>
-nnoremap <C-y> 3<C-y>
+nnoremap <c-e> 3<c-e>
+nnoremap <c-y> 3<c-y>
 
 "  Faster buffer navigation.
 nnoremap <silent> <PageUp>   :bprevious<cr>
@@ -224,4 +230,4 @@ tnoremap <c-w><c-k>  <c-\><c-n><c-w><c-k>
 tnoremap <c-w><c-l>  <c-\><c-n><c-w><c-l>
 
 "  Exit terminal mode.
-tnoremap <Esc> <C-\><C-n>
+tnoremap <esc> <C-\><C-n>

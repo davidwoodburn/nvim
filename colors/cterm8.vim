@@ -1,6 +1,6 @@
 "  Purpose: color scheme
 "  Author:  David Woodburn <david.woodburn@icloud.com>
-"  Date:    2020-12-30
+"  Date:    2021-03-02
 "
 "  This color scheme is designed specifically for use in the terminal, not a
 "  GUI, hence the name.  It is designed to explicitly specify each scheme
@@ -190,10 +190,10 @@ hi VisualNOS         ctermfg=none         ctermbg=238          cterm=none
 "  CursorLineNr only take effect when those features are turned on with 'set
 "  cursorline'.  Because of performance issues, most of these are turned 'off'
 "  by setting them to 'none'.
-hi Cursor            ctermfg=none         ctermbg=none         cterm=none
-hi lCursor           ctermfg=none         ctermbg=none         cterm=none
-hi CursorIM          ctermfg=none         ctermbg=none         cterm=none
-hi CursorColumn      ctermfg=none         ctermbg=none         cterm=none
+hi Cursor            ctermfg=none         ctermbg=244          cterm=none
+hi lCursor           ctermfg=none         ctermbg=244          cterm=none
+hi CursorIM          ctermfg=none         ctermbg=244          cterm=none
+hi CursorColumn      ctermfg=none         ctermbg=244          cterm=none
 hi CursorLine        ctermfg=none         ctermbg=none         cterm=none
 hi CursorLineNr      ctermfg=230          ctermbg=238          cterm=none
 
