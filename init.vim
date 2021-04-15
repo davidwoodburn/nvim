@@ -1,6 +1,6 @@
 "  Purpose: initialization file
 "  Author:  David Woodburn <david.woodburn@icloud.com>
-"  Date:    2021-03-10
+"  Date:    2021-03-26
 
 "  --------
 "  Settings
@@ -36,6 +36,7 @@ set spell!                       "  turn on spell checking for all occasions
 set smartcase                    "  override ignorecase when capitals are used
 set suffixesadd=.c,.m,.tex,.txt,.vim,.md  "  extensions to try for gf (go file)
 set undofile                     "  turn on persistent undo
+set foldmethod=indent            "  make folding work on indentation level
 set omnifunc=OmniComplete
 set completeopt=menuone
 
@@ -78,6 +79,9 @@ let g:netrw_keepdir = 0          "  change directory to what is visible
 "  ------------------
 "  Automatic commands
 "  ------------------
+
+"  Unfold all (added because of 'set foldmethod=indent')
+au BufRead * normal zR
 
 "  Remove trail
 au BufWritePre * %s/\s\+$//e
@@ -198,7 +202,8 @@ nnoremap <leader>s :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name")
 
 "  (\t) Create new terminal instance.
 nnoremap <silent> <leader>vt :vs<cr>:term<cr>a
-nnoremap <silent> <leader>t :sp<cr>:term<cr>:res 10<cr>a
+nnoremap <silent> <leader>t :sp<cr>:term<cr>:res 10<cr>
+   \ :setlocal winfixheight<cr>a
 nnoremap <silent> <leader>T :tabe<cr>:term<cr>a
 
 "  (\w) Highlight trailing white-space characters
