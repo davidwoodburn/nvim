@@ -5,7 +5,6 @@ autoload/
 doc/
 ftplugin/
 plugin/
-snippets/
 spell/
 syntax/
 *.txt
